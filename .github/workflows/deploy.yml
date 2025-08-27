@@ -1,0 +1,78 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/pip
+          ~/.cache/npm
+        key: ${{ runner.os }}-cache-${{ hashFiles('**/requirements.txt', '**/package-lock.json', '**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cache-
+      
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+      with:
+        enablement: true
+        
+    - name: Prepare deployment structure
+      run: |
+        echo "Creating deployment structure..."
+        mkdir -p ./deploy/LF-VAR
+        cp -r ./web_page/* ./deploy/LF-VAR/
+        
+        # Copy figures to the parent directory of web_page for ../figures/ paths
+        echo "Copying figures to deployment directory..."
+        mkdir -p ./deploy/figures
+        cp -r ./figures/* ./deploy/figures/
+        
+        echo "Deployment structure created:"
+        ls -la ./deploy/
+        ls -la ./deploy/LF-VAR/
+        ls -la ./deploy/figures/
+      
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: './deploy'
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    steps:
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+      
+    - name: Verify deployment
+      run: |
+        echo "Deployment completed successfully!"
+        echo "Your site should be available at: ${{ steps.deployment.outputs.page_url }}"
+        echo "Custom domain path: https://research.echosun.top/LF-VAR"
+        echo "Please wait a few minutes for the changes to propagate."

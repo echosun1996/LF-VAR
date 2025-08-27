@@ -1,0 +1,58 @@
+# mega
+timm==0.3.2
+lightning
+einops
+omegaconf
+scipy
+opencv-python
+tensorboard
+
+# Pytorch
+torch
+torchvision
+torchaudio
+
+# Others
+wandb
+pillow
+tqdm
+rich
+numpy
+pandas
+
+# Stable-diffusion-2-inpainting
+diffusers
+transformers
+accelerate
+scipy
+safetensors
+# for optional performance improvement; skip if installation fails
+xformers; platform_system == "Linux" or platform_system == "Windows"
+# fine-tune
+ftfy
+gradio
+accelerate
+datasets
+
+# Metrics
+# https://github.com/toshas/torch-fidelity
+torch-fidelity
+
+# VAR
+huggingface_hub
+pytz
+typed-argument-parser
+flash-attn
+
+# RadiomicsFill-Mammo
+matplotlib
+SimpleITK
+
+#Main
+pyradiomics
+scikit-learn
+tensorflow
+umap-learn
+hdbscan
+seaborn
+adjustText

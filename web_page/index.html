@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LF-VAR: Controllable Skin Synthesis via Lesion-Focused Vector Autoregression Model</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>LF-VAR</h1>
+            <p class="subtitle">Controllable Skin Synthesis via Lesion-Focused Vector Autoregression Model</p>
+            <div class="authors">
+                <span class="author-name" data-affiliations="School of Translational Medicine, Faculty of Medicine, Nursing and Health Sciences, Monash University, Melbourne, Australia&#10;Melbourne Sexual Health Centre, Alfred Health, Melbourne, Australia&#10;Email: Jiajun.Sun@monash.edu">Jiajun Sun</span> • 
+                <span class="author-name" data-affiliations="AIM for Health Lab, Monash University, Melbourne, VIC, Australia&#10;Faculty of IT, Monash University, Melbourne, VIC, Australia&#10;Email: Zhen.Yu1@monash.edu">Zhen Yu</span> • 
+                <span class="author-name" data-affiliations="AIM for Health Lab, Monash University, Melbourne, VIC, Australia&#10;Faculty of Engineering, Monash University, Melbourne, VIC, Australia&#10;Email: Siyuan.Yan@monash.edu">Siyuan Yan</span> • 
+                <span class="author-name" data-affiliations="School of Translational Medicine, Faculty of Medicine, Nursing and Health Sciences, Monash University, Melbourne, Australia&#10;Melbourne Sexual Health Centre, Alfred Health, Melbourne, Australia&#10;Faculty of Infectious and Tropical Diseases, London School of Hygiene and Tropical Medicine, London, United Kingdom&#10;Email: Jason.Ong@monash.edu">Jason J. Ong</span> • 
+                <span class="author-name corresponding-author" data-affiliations="AIM for Health Lab, Monash University, Melbourne, VIC, Australia&#10;Faculty of IT, Monash University, Melbourne, VIC, Australia&#10;Email: Zongyuan.Ge@monash.edu">Zongyuan Ge</span> • 
+                <span class="author-name corresponding-author" data-affiliations="School of Translational Medicine, Faculty of Medicine, Nursing and Health Sciences, Monash University, Melbourne, Australia&#10;Melbourne Sexual Health Centre, Alfred Health, Melbourne, Australia&#10;China-Australia Joint Research Center for Infectious Diseases, School of Public Health, Xi'an Jiaotong University Health Science Center, Xi'an, Shaanxi, China&#10;Phase I clinical trial research ward, The Second Affiliated Hospital of Xi'an Jiaotong University, Xi'an, Shaanxi, China&#10;Email: Lei.Zhang1@monash.edu">Lei Zhang</span>
+            </div>
+            <div class="conference"><a href="https://conferences.miccai.org/2025/en/default.asp" target="_blank" rel="noopener noreferrer">MICCAI 2025</a></div>
+            <div class="corresponding">
+                <span class="corresponding-label">Corresponding Authors:</span> 
+                <span class="corresponding-author" data-affiliations="AIM for Health Lab, Monash University, Melbourne, VIC, Australia&#10;Faculty of IT, Monash University, Melbourne, VIC, Australia&#10;Email: Zongyuan.Ge@monash.edu">Zongyuan Ge</span> • 
+                <span class="corresponding-author" data-affiliations="School of Translational Medicine, Faculty of Medicine, Nursing and Health Sciences, Monash University, Melbourne, Australia&#10;Melbourne Sexual Health Centre, Alfred Health, Melbourne, Australia&#10;China-Australia Joint Research Center for Infectious Diseases, School of Public Health, Xi'an Jiaotong University Health Science Center, Xi'an, Shaanxi, China&#10;Phase I clinical trial research ward, The Second Affiliated Hospital of Xi'an Jiaotong University, Xi'an, Shaanxi, China&#10;Email: Lei.Zhang1@monash.edu">Lei Zhang</span>
+            </div>
+        </div>
+    </header>
+
+    <nav>
+        <div class="nav-container">
+            <a href="#abstract">Abstract</a>
+            <a href="#method">Method</a>
+            <a href="#results">Results</a>
+            <a href="#code">Code</a>
+        </div>
+    </nav>
+
+    <main>
+        <section id="abstract">
+            <h2>Abstract</h2>
+            <div class="abstract-content">
+                <p>Skin images from real-world clinical practice are often limited, resulting in a shortage of training data for deep-learning models. While many studies have explored skin image synthesis, existing methods often generate low-quality images and lack control over the lesion's location and type.</p>
+                <p>To address these limitations, we present <strong>LF-VAR</strong>, a model leveraging quantified lesion measurement scores and lesion type labels to guide the clinically relevant and controllable synthesis of skin images. It enables controlled skin synthesis with specific lesion characteristics based on language prompts.</p>
+                <p>We train a multiscale lesion-focused Vector Quantised Variational Auto-Encoder (VQVAE) to encode images into discrete latent representations for structured tokenization. Then, a Visual AutoRegressive (VAR) Transformer trained on tokenized representations facilitates image synthesis. Lesion measurement from the lesion region and types as conditional embeddings are integrated to enhance synthesis fidelity.</p>
+                <p>Our method achieves the <strong>best overall FID score (average 0.74)</strong> among seven lesion types, improving upon the previous state-of-the-art (SOTA) by <strong>6.3%</strong>.</p>
+            </div>
+        </section>
+
+        <section id="method">
+            <h2>Method Overview</h2>
+            <div class="method-content">
+                <div class="architecture">
+                    <img src="../figures/F1.png" alt="LF-VAR Overall Architecture" />
+                    <p class="caption">Figure 1: Overall architecture of the LF-VAR model. The model consists of a lesion-focused VQVAE encoder-decoder and a conditional VAR transformer for controllable skin image synthesis.</p>
+                </div>
+                <div class="method-steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>Lesion-Focused VQVAE</h3>
+                            <p>Multiscale encoder-decoder architecture that captures lesion-specific features and generates discrete latent representations</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>Conditional VAR Transformer</h3>
+                            <p>Autoregressive transformer trained on tokenized representations with lesion type and radiomics features as conditional embeddings</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>Controlled Synthesis</h3>
+                            <p>Language-guided generation with precise control over lesion characteristics and spatial location</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="results">
+            <h2>Results & Performance</h2>
+            <div class="results-content">
+                <div class="comparison">
+                    <img src="../figures/F2.png" alt="Cross-Category Synthesis Comparison" />
+                    <p class="caption">Figure 2: Inter-class synthesis results and FID matrix for seven disease classes, demonstrating the model's ability to generate high-quality skin images across different lesion types.</p>
+                </div>
+                
+                <div class="results-table-section">
+                    <h3>Quantitative Results Comparison</h3>
+                    <div class="table-container">
+                        <table class="results-table">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2">Method</th>
+                                    <th rowspan="2">Prompt</th>
+                                    <th rowspan="2">Metric</th>
+                                    <th>AKIEC</th>
+                                    <th>BCC</th>
+                                    <th>BKL</th>
+                                    <th>DF</th>
+                                    <th>MEL</th>
+                                    <th>NV</th>
+                                    <th>VASC</th>
+                                    <th>Average</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="method-row mage">
+                                    <td rowspan="2" class="method-name">MAGE</td>
+                                    <td rowspan="2" class="input-type">✗</td>
+                                    <td class="metric-type">IS ↑</td>
+                                    <td>3.08 ± 0.13</td>
+                                    <td>3.18 ± 0.12</td>
+                                    <td>3.01 ± 0.15</td>
+                                    <td>2.96 ± 0.21</td>
+                                    <td>2.91 ± 0.16</td>
+                                    <td>2.98 ± 0.14</td>
+                                    <td>3.08 ± 0.11</td>
+                                    <td>3.03 ± 0.15</td>
+                                </tr>
+                                <tr class="method-row mage">
+                                    <td class="metric-type">FID ↓</td>
+                                    <td>12.92</td>
+                                    <td>11.86</td>
+                                    <td>9.84</td>
+                                    <td>12.18</td>
+                                    <td>8.49</td>
+                                    <td>14.97</td>
+                                    <td>16.34</td>
+                                    <td>12.37</td>
+                                </tr>
+                                
+                                <tr class="method-row mage-adapter">
+                                    <td rowspan="2" class="method-name">MAGE Adapter</td>
+                                    <td rowspan="2" class="input-type">✗</td>
+                                    <td class="metric-type">IS ↑</td>
+                                    <td>2.49 ± 0.05</td>
+                                    <td>1.79 ± 0.09</td>
+                                    <td>1.98 ± 0.05</td>
+                                    <td>2.84 ± 0.14</td>
+                                    <td>2.38 ± 0.09</td>
+                                    <td>2.66 ± 0.10</td>
+                                    <td>2.67 ± 0.16</td>
+                                    <td>2.40 ± 0.10</td>
+                                </tr>
+                                <tr class="method-row mage-adapter">
+                                    <td class="metric-type">FID ↓</td>
+                                    <td>2.33</td>
+                                    <td>7.99</td>
+                                    <td>2.65</td>
+                                    <td>3.09</td>
+                                    <td>5.82</td>
+                                    <td>3.24</td>
+                                    <td>3.28</td>
+                                    <td>4.06</td>
+                                </tr>
+                                
+                                <tr class="method-row derm-t2im">
+                                    <td rowspan="2" class="method-name">Derm T2IM</td>
+                                    <td rowspan="2" class="input-type">Text</td>
+                                    <td class="metric-type">IS ↑</td>
+                                    <td>3.74 ± 0.19</td>
+                                    <td>4.23 ± 0.17</td>
+                                    <td>3.94 ± 0.39</td>
+                                    <td>5.03 ± 0.31</td>
+                                    <td>3.59 ± 0.29</td>
+                                    <td>4.74 ± 0.30</td>
+                                    <td>4.69 ± 0.46</td>
+                                    <td>4.28 ± 0.30</td>
+                                </tr>
+                                <tr class="method-row derm-t2im">
+                                    <td class="metric-type">FID ↓</td>
+                                    <td>6.52</td>
+                                    <td>6.02</td>
+                                    <td>3.32</td>
+                                    <td>5.31</td>
+                                    <td>4.74</td>
+                                    <td>6.26</td>
+                                    <td>5.69</td>
+                                    <td>5.41</td>
+                                </tr>
+                                
+                                <tr class="method-row diffusion">
+                                    <td rowspan="2" class="method-name">Diffusion</td>
+                                    <td rowspan="2" class="input-type">Mask</td>
+                                    <td class="metric-type">IS ↑</td>
+                                    <td>3.90 ± 0.20</td>
+                                    <td>4.88 ± 0.25</td>
+                                    <td>3.12 ± 0.12</td>
+                                    <td>4.04 ± 0.18</td>
+                                    <td>4.22 ± 0.30</td>
+                                    <td>3.96 ± 0.25</td>
+                                    <td>3.10 ± 0.09</td>
+                                    <td>3.89 ± 0.20</td>
+                                </tr>
+                                <tr class="method-row diffusion">
+                                    <td class="metric-type">FID ↓</td>
+                                    <td>1.22</td>
+                                    <td>1.47</td>
+                                    <td>0.78</td>
+                                    <td>1.15</td>
+                                    <td>0.90</td>
+                                    <td>1.57</td>
+                                    <td>0.64</td>
+                                    <td>1.11</td>
+                                </tr>
+                                
+                                <tr class="method-row var">
+                                    <td rowspan="2" class="method-name">VAR</td>
+                                    <td rowspan="2" class="input-type">Text-Mask</td>
+                                    <td class="metric-type">IS ↑</td>
+                                    <td>3.09 ± 0.14</td>
+                                    <td>2.57 ± 0.12</td>
+                                    <td>3.27 ± 0.19</td>
+                                    <td>2.58 ± 0.08</td>
+                                    <td>2.76 ± 0.11</td>
+                                    <td>2.37 ± 0.10</td>
+                                    <td>2.48 ± 0.15</td>
+                                    <td>2.73 ± 0.13</td>
+                                </tr>
+                                <tr class="method-row var">
+                                    <td class="metric-type">FID ↓</td>
+                                    <td>0.74</td>
+                                    <td>1.58</td>
+                                    <td>0.44</td>
+                                    <td>0.76</td>
+                                    <td>0.44</td>
+                                    <td>0.56</td>
+                                    <td>1.04</td>
+                                    <td>0.79</td>
+                                </tr>
+                                
+                                <tr class="method-row ours">
+                                    <td rowspan="2" class="method-name">Ours (LF-VAR)</td>
+                                    <td rowspan="2" class="input-type">Text-Mask</td>
+                                    <td class="metric-type">IS ↑</td>
+                                    <td>3.27 ± 0.13</td>
+                                    <td>2.41 ± 0.09</td>
+                                    <td>3.26 ± 0.12</td>
+                                    <td>2.34 ± 0.11</td>
+                                    <td>2.84 ± 0.08</td>
+                                    <td>2.63 ± 0.13</td>
+                                    <td>3.92 ± 0.08</td>
+                                    <td>2.95 ± 0.10</td>
+                                </tr>
+                                <tr class="method-row ours">
+                                    <td class="metric-type">FID ↓</td>
+                                    <td class="bold">0.60</td>
+                                    <td class="bold">1.04</td>
+                                    <td class="bold">0.69</td>
+                                    <td class="bold">0.63</td>
+                                    <td class="bold">0.45</td>
+                                    <td class="bold">0.56</td>
+                                    <td class="bold">1.09</td>
+                                    <td class="bold">0.74</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="table-legend">
+                        <p><strong>Legend:</strong> <span class="bold">Bold</span> = Best performance, <span class="underline">Underline</span> = Second best performance</p>
+                        <p><strong>Metrics:</strong> IS (Inception Score) ↑ = Higher is better, FID (Fréchet Inception Distance) ↓ = Lower is better</p>
+                        <p><strong>Prompt Types:</strong> ✗ = No prompt, Text = Text prompt, Mask = Mask prompt, Text-Mask = Text + Mask prompt</p>
+                    </div>
+                </div>
+
+                <div class="metrics">
+                    <div class="metric-card">
+                        <div class="metric-value">0.74</div>
+                        <div class="metric-label">Average FID Score</div>
+                        <div class="metric-desc">Best among 7 lesion types</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">6.3%</div>
+                        <div class="metric-label">Improvement</div>
+                        <div class="metric-desc">Over previous SOTA</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">7</div>
+                        <div class="metric-label">Lesion Types</div>
+                        <div class="metric-desc">Supported categories</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="code">
+            <h2>Code & Resources</h2>
+            <div class="resources-content">
+                <div class="buttons">
+                    <a href="https://github.com/echosun1996/LF-VAR" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+                        <span class="btn-icon">📁</span>
+                        GitHub
+                    </a>
+                    <a href="https://arxiv.org/abs/2508.19626" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">
+                        <span class="btn-icon">📄</span>
+                        arXiv
+                    </a>
+                    <a href="https://drive.google.com/drive/folders/1Mrr9wsE5TyFUKMn65TRbyGbR5vv1nqW7" class="btn btn-secondary">
+                        <span class="btn-icon">💾</span>
+                        Pre-trained Models
+                    </a>
+                    <a href="https://www.linkedin.com/in/jiajun-s/" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">
+                        <span class="btn-icon">💼</span>
+                        LinkedIn
+                    </a>
+                    <a href="https://scholar.google.com/citations?user=baez9LEAAAAJ&hl=en" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">
+                        <span class="btn-icon">🎓</span>
+                        Scholar
+                    </a>
+                </div>
+                <div class="quick-start">
+                    <h3>Quick Start</h3>
+                    <div class="code-block">
+                        <code>git clone https://github.com/echosun1996/LF-VAR.git</code>
+                        <code>cd LF-VAR</code>
+                        <code>./main.sh 2    # Download Dataset</code>
+                        <code>./main.sh m    # Run LF-VAR</code>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="citation">
+            <h2>Citation</h2>
+            <div class="citation-content">
+                <div class="bibtex">
+                    <pre><code>@InProceedings{SunJia_Controllable_MICCAI2025,
+    author = { Sun, Jiajun and Yu, Zhen and Yan, Siyuan and Ong, Jason J. and Ge, Zongyuan and Zhang, Lei},
+    title = { { Controllable Skin Synthesis via Lesion-Focused Vector Autoregression Model } },
+    booktitle = {proceedings of Medical Image Computing and Computer Assisted Intervention -- MICCAI 2025},
+    year = {2025},
+    publisher = {Springer Nature Switzerland},
+    volume = {LNCS 15975},
+    month = {September},
+    page = {128 -- 138}
+}
+</code></pre>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 Monash University AIM Group Dermatology Team. All rights reserved.</p>
+            <p>For questions and collaborations, please contact: <strong>Jiajun Sun</strong> (Jiajun.Sun@monash.edu) and <strong>Zhen Yu</strong> (Zhen.Yu1@monash.edu)</p>
+        </div>
+    </footer>
+
+    <script>
+        // Add click event listeners to all author names
+        document.addEventListener('DOMContentLoaded', function() {
+            const authorNames = document.querySelectorAll('.author-name');
+            
+            authorNames.forEach(author => {
+                author.addEventListener('click', function() {
+                    const affiliations = this.getAttribute('data-affiliations');
+                    if (affiliations) {
+                        showAffiliationTooltip(this, affiliations);
+                    }
+                });
+            });
+        });
+
+        function showAffiliationTooltip(element, affiliations) {
+            // Remove any existing tooltips
+            const existingTooltip = document.querySelector('.affiliation-tooltip');
+            if (existingTooltip) {
+                existingTooltip.remove();
+            }
+
+            // Create tooltip
+            const tooltip = document.createElement('div');
+            tooltip.className = 'affiliation-tooltip';
+            
+            // Split affiliations by &#10; (line break) and create formatted content
+            // First decode HTML entities, then split by actual line breaks
+            const decodedAffiliations = affiliations.replace(/&#10;/g, '\n');
+            const affiliationList = decodedAffiliations.split('\n').filter(aff => aff.trim() !== '');
+            const formattedContent = affiliationList.map((aff, index) => {
+                if (aff.startsWith('Email:')) {
+                    return `<div class="email-line">${aff}</div>`;
+                } else {
+                    // Add bullet point before each affiliation
+                    return `<div class="affiliation-line">• ${aff}</div>`;
+                }
+            }).join('');
+            
+            tooltip.innerHTML = formattedContent;
+            
+            // Position tooltip
+            const rect = element.getBoundingClientRect();
+            tooltip.style.position = 'fixed';
+            tooltip.style.top = (rect.bottom + 10) + 'px';
+            tooltip.style.left = (rect.left + rect.width / 2) + 'px';
+            tooltip.style.transform = 'translateX(-50%)';
+            
+            // Add to body
+            document.body.appendChild(tooltip);
+            
+            // Auto-remove after 5 seconds (longer for more content)
+            setTimeout(() => {
+                if (tooltip.parentNode) {
+                    tooltip.remove();
+                }
+            }, 5000);
+            
+            // Also remove on click outside
+            document.addEventListener('click', function removeTooltip(e) {
+                if (!element.contains(e.target) && !tooltip.contains(e.target)) {
+                    tooltip.remove();
+                    document.removeEventListener('click', removeTooltip);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
