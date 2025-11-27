@@ -40,8 +40,8 @@ jobs:
     - name: Prepare deployment structure
       run: |
         echo "Creating deployment structure..."
-        mkdir -p ./deploy/LF-VAR
-        cp -r ./web_page/* ./deploy/LF-VAR/
+        mkdir -p ./deploy/
+        cp -r ./web_page/* ./deploy/
         
         # Copy figures to the parent directory of web_page for ../figures/ paths
         echo "Copying figures to deployment directory..."
@@ -50,7 +50,7 @@ jobs:
         
         echo "Deployment structure created:"
         ls -la ./deploy/
-        ls -la ./deploy/LF-VAR/
+        ls -la ./deploy/
         ls -la ./deploy/figures/
       
     - name: Upload artifact
